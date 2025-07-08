@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Productivity Protector</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+<div class="container">
+    <h1>Productivity Protector</h1>
+
+    <div class="setting-row">
+        <label for="toggle-switch" class="toggle-label">Extension Enabled</label>
+        <label class="switch">
+            <input type="checkbox" id="toggle-switch">
+            <span class="slider round"></span>
+        </label>
+    </div>
+
+    <div class="setting-row">
+        <label for="websites" class="websites-label">Distracting Websites</label>
+        <p class="description">Enter one domain per line (e.g., youtube.com)</p>
+        <textarea id="websites" rows="8"></textarea>
+    </div>
+
+    <button id="save-button">Save Settings</button>
+    <p id="save-confirm" class="save-confirm-hidden">Saved!</p>
+</div>
+<script src="popup.js"></script>
+</body>
+</html>
