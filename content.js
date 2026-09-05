@@ -22,6 +22,7 @@ class PageModifier {
     }
 
     setupMessageListener() {
+        if (typeof chrome === 'undefined' || !chrome.runtime || !chrome.runtime.onMessage) return;
         chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             switch (message.type) {
                 case 'UPDATE_STATE':
@@ -68,6 +69,11 @@ class PageModifier {
         else tier = 'harsh';
         reminder.classList.add(`reminder-${tier}`);
 
+        const papers = ['assets/paper-torn-a.webp', 'assets/paper-torn-c.webp'];
+        const paperPath = papers[Math.floor(Math.random() * papers.length)];
+        reminder.style.setProperty('--pp-paper', `url("${this.extensionUrl(paperPath)}")`);
+        reminder.style.setProperty('--pp-tilt', `${(Math.random() * 2.6 - 1.3).toFixed(2)}deg`);
+
         // Select a random message from the library
         const messagesForLevel = window.REMINDER_LIBRARY[level];
         const messageText = messagesForLevel[Math.floor(Math.random() * messagesForLevel.length)];
@@ -79,19 +85,28 @@ class PageModifier {
         closeButton.className = 'close-btn';
         closeButton.innerHTML = '×';
         closeButton.onclick = () => reminder.remove();
+        closeButton.addEventListener('mousedown', (e) => e.stopPropagation());
 
         reminder.appendChild(closeButton);
         reminder.appendChild(message);
 
-        // Random position in pixels
-        // Ensure it appears within a reasonable viewport area
-        const maxWidth = window.innerWidth - reminder.offsetWidth - 50; // Account for element width
-        const maxHeight = window.innerHeight - reminder.offsetHeight - 50; // and height
-        reminder.style.top = `${Math.max(20, Math.random() * maxHeight)}px`;
-        reminder.style.left = `${Math.max(20, Math.random() * maxWidth)}px`;
-
         this.makeElementDraggable(reminder);
         document.body.appendChild(reminder);
+
+        const width = reminder.offsetWidth || 320;
+        const height = reminder.offsetHeight || 160;
+        const margin = 12;
+        const maxLeft = Math.max(margin, window.innerWidth - width - margin);
+        const maxTop = Math.max(margin, window.innerHeight - height - margin);
+        reminder.style.top = `${margin + Math.random() * Math.max(0, maxTop - margin)}px`;
+        reminder.style.left = `${margin + Math.random() * Math.max(0, maxLeft - margin)}px`;
+    }
+
+    extensionUrl(path) {
+        if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getURL) {
+            return chrome.runtime.getURL(path);
+        }
+        return path;
     }
 
     showFocusWall() {

@@ -1,0 +1,8 @@
+Torn notebook popup textures
+
+- Paper fiber overlay: Paper001 Color, ambientCG (CC0)
+  https://ambientcg.com/view?id=Paper001
+  Wikimedia: File:Paper001_4K_Color.png
+- Age/warmth overlay: Old paper texture, Wikimedia Commons (CC0)
+  https://commons.wikimedia.org/wiki/File:Old_Paper_texture.jpg
+- Torn notebook silhouettes composited on top of those photographs.

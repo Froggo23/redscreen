@@ -2,7 +2,23 @@ class ProductivityTracker {
     constructor() {
         this.settings = { isEnabled: true, websites: [] };
         this.trackedTabs = {}; // { tabId: { elapsedTime: 0, level: 0, intervalId: null } }
-        this.LEVEL_INTERVAL_SECONDS = 5; // Changed from 225 to 5 for testing
+        // Seconds spent at the previous level before advancing.
+        // The old `5` was a leftover test value (originally a flat 225s).
+        // Mild notes arrive after a real "quick look"; the wall is ~20 min in.
+        this.LEVEL_INTERVALS_SECONDS = [
+            120, // →1  2:00   10% red, mild
+            150, // →2  4:30   20% red, mild
+            180, // →3  7:30   30% red, moderate
+            180, // →4 10:30   40% red, moderate
+            210, // →5 14:00   50% red, moderate
+            150, // →6 16:30   60% red, harsh
+            120, // →7 18:30   70% red, last warning
+             90, // →8 20:00   focus wall
+        ];
+        this.levelThresholds = this.LEVEL_INTERVALS_SECONDS.reduce((acc, interval) => {
+            acc.push((acc.length ? acc[acc.length - 1] : 0) + interval);
+            return acc;
+        }, []);
         this.MAX_LEVEL = 8;
         this.TICK_INTERVAL_MS = 1000;
 
@@ -148,7 +164,13 @@ class ProductivityTracker {
         tabData.elapsedTime++;
 
         const oldLevel = tabData.level;
-        const newLevel = Math.min(this.MAX_LEVEL, Math.floor(tabData.elapsedTime / this.LEVEL_INTERVAL_SECONDS));
+        let newLevel = 0;
+        for (let i = 0; i < this.levelThresholds.length; i++) {
+            if (tabData.elapsedTime >= this.levelThresholds[i]) {
+                newLevel = i + 1;
+            }
+        }
+        newLevel = Math.min(this.MAX_LEVEL, newLevel);
 
         if (newLevel > oldLevel) {
             tabData.level = newLevel;

@@ -13,31 +13,60 @@
     display: block;
 }
 
-/* --- Reminder Popups --- */
+/* --- Reminder Popups (torn notebook scrap) --- */
 .productivity-reminder {
+    --pp-wash: linear-gradient(transparent, transparent);
+    --pp-tilt: -0.6deg;
     position: fixed;
-    background-color: #fffde7;
-    border: 2px solid #d32f2f;
-    border-radius: 8px;
-    padding: 20px 25px;
+    background: none;
+    border: none;
+    border-radius: 0;
+    /* Extra left padding keeps copy off the spiral holes / margin line. */
+    padding: 36px 36px 36px 64px;
     z-index: 2147483641;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    box-shadow: none;
+    box-sizing: border-box;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    color: #333;
-    cursor: move; /* Indicates the element is draggable */
-    user-select: none; /* Prevents text selection while dragging */
+    color: #2c241c;
+    cursor: move;
+    user-select: none;
+    transform: rotate(var(--pp-tilt));
+    isolation: isolate;
+}
+
+.productivity-reminder::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image: var(--pp-wash), var(--pp-paper);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    -webkit-mask-image: var(--pp-paper);
+    -webkit-mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-image: var(--pp-paper);
+    mask-size: 100% 100%;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    filter: drop-shadow(2px 7px 10px rgba(40, 22, 10, 0.45));
 }
 
 .productivity-reminder p {
     margin: 0;
     padding: 0;
     line-height: 1.5;
+    position: relative;
+    overflow-wrap: break-word;
 }
 
 .productivity-reminder .close-btn {
     position: absolute;
-    top: 5px;
-    right: 8px;
+    top: 20px;
+    right: 24px;
     background: none;
     border: none;
     font-size: 24px;
@@ -46,36 +75,48 @@
     cursor: pointer;
     padding: 0;
     line-height: 1;
+    z-index: 1;
 }
 
 .productivity-reminder .close-btn:hover {
     color: #b71c1c;
 }
 
-/* Reminder Tiers */
+/* Reminder Tiers — same sizes/weight as before; paper wash instead of flat fill */
 .reminder-mild {
     font-size: 16px;
-    min-width: 280px;
-    max-width: 350px;
+    min-width: min(280px, calc(100vw - 24px));
+    max-width: min(350px, calc(100vw - 24px));
+    min-height: 150px;
 }
 
 .reminder-moderate {
     font-size: 18px;
-    min-width: 320px;
-    max-width: 420px;
+    min-width: min(320px, calc(100vw - 24px));
+    max-width: min(420px, calc(100vw - 24px));
+    min-height: 168px;
     font-weight: 500;
-    background-color: #ffcdd2;
-    border-color: #c62828;
+    --pp-wash: linear-gradient(rgba(198, 40, 40, 0.16), rgba(183, 28, 28, 0.22));
 }
 
 .reminder-harsh {
     font-size: 22px;
-    min-width: 400px;
-    max-width: 500px;
+    min-width: min(400px, calc(100vw - 24px));
+    max-width: min(500px, calc(100vw - 24px));
+    min-height: 188px;
     font-weight: 700;
-    background-color: #ef9a9a;
-    border-color: #b71c1c;
-    color: #212121;
+    color: #1a120e;
+    --pp-wash: linear-gradient(rgba(183, 28, 28, 0.28), rgba(120, 12, 12, 0.36));
+}
+
+@media (max-width: 480px) {
+    .productivity-reminder {
+        padding: 30px 22px 28px 48px;
+    }
+    .productivity-reminder .close-btn {
+        top: 14px;
+        right: 16px;
+    }
 }
 
 /* --- Level 8 Focus Wall --- */
